@@ -1,0 +1,17 @@
+.hide{
+    display: none;
+}
+
+#game{
+    background-color: #30b81b;
+}
+
+#map{ 
+    height: 300px;
+    width: 300px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 1000;
+}
+

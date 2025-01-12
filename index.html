@@ -14,13 +14,48 @@
     
   </head>
   <body>
-    <button type="button" id = "playButton"> Play </button>
+    <button type="button" id = "playButton" class="hide"> Play </button>
 
     <section id="game" class = "hide"> 
       <div id="mly" style="width: 100vw; height: 100vh;"></div>
       <div id="map"></div>
     </section>
     
+    <section id="result" class = "hide"> 
+      <div id="map2"></div>
+      <h1> Round <span id = "roundNumber">1</span></h1>
+      <div id="score">
+        Score: <span id="scoreNumber">0</span> points
+      </div>
+      <div id="guess" class = "hide"> Your guess is: <span id = "km">0</span> km away from the current location</div>
+      <div id="noGuess" class = "hide"> You never made a guess.</div>
+      <button id = "NextRound" type = "button"> Next Round </button>
+      <button id = "endGame" type = "button" class = "hide"> End Game </button>
+    </section>
+    <section id="endGame">
+      <h1> Game Ended</h1>
+      <div id="map3"></div>
+      <table> 
+        <tr>
+          <th>Round 1</th>
+          <th>Round 2</th>
+          <th>Round 3</th>
+          <th>Final</th>
+        </tr>
+        <tr id = "scoreRow">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr id = "distanceRow">
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </table>
+    </section>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""></script>

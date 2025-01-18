@@ -14,8 +14,33 @@
     right: 0;
     z-index: 1000;
 }
-
 #map2{ 
     width: 80vw; 
     height: 60vh;
+}
+#map3{ 
+    width: 80vw; 
+    height: 60vh;
+}
+
+.red{
+    color: red;
+}
+.blue{
+    color: blue;
+}
+.yellow{
+    color: yellow;
+}
+.legend{
+    background-color: white;
+}
+.legend div{
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin: 0 8px 0 0;
+}
+.legend div.icon{
+    background-size: 18px;
 }

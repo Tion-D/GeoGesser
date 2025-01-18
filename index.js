@@ -10,17 +10,28 @@ const endGameButton = document.querySelector("#endGame");
 const roundNumberDiv = document.querySelector("#roundNumber");
 const ScoreRow = document.querySelector("#scoreRow");
 const distanceRow = document.querySelector("#distanceRow");
+const replayButton = document.querySelector('#replay');
+const scoreTDs = ScoreRow.querySelectorAll("td");
+const distanceTDs = distanceRow.querySelectorAll("td");
 let overAllScore = 0;
 let round = 1;
-
-
+let overAllDistance = 0;
+let distanceValue = [];
+let scoreValue = [];
+let playerGuessCord = [];
+let actualCord = [];
+let colors = [
+    "blue",
+    "yellow",
+    "red"
+];
 let map = new L.Map('map', {
     fullscreenControl: true,
     fullscreenControlOptions: {
         position: 'topleft'
     }
 });
-map.setView([51.505, -0.09], 3);
+map.setView([0, 0], 3);
 
 let map2 = new L.Map('map2', {
 });
@@ -34,6 +45,13 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+let map3 = new L.Map('map3', {
+});
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map3);
+map3.setView([0, 0], 2.5);
 
 var {Viewer} = mapillary;
 
@@ -45,7 +63,7 @@ let locations = [
     {lat: 53.1517718834, lng: 22.400322247339},
 ];
 let currentLocation = locations[Math.floor(Math.random() * locations.length)];
-
+actualCord.push(currentLocation);
 map2.setView([currentLocation.lat, currentLocation.lng], 6);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -97,9 +115,13 @@ function submitGuess(playerGuess){
     gameSection.classList.add("hide");
     round += 1;
     if(playerGuess != null){
+        playerGuessCord.push(playerGuess);
         let distance = calculateDistance(playerGuess.lat, playerGuess.lng, currentLocation.lat, currentLocation.lng);
+        distanceValue.push(distance);
         let currentScore = calculateScore(distance);
+        scoreValue.push(currentScore);
         overAllScore += currentScore;
+        overAllDistance += distance;
         guess.classList.remove("hide");
         scoreSpan.innerText = currentScore;
         distanceSpan.innerText = distance;
@@ -113,6 +135,8 @@ function submitGuess(playerGuess){
     else{
         noGuess.classList.remove("hide");
         scoreSpan.innerText = 0;
+        scoreValue.push(0);
+        distanceValue.push("N/A");
     }
 }
 
@@ -121,7 +145,7 @@ function changeLocation() {
     do {
         newLocation = locations[Math.floor(Math.random() * locations.length)];
     } while (newLocation.lat === currentLocation.lat && newLocation.lng === currentLocation.lng);
-    
+    actualCord.push(newLocation);
     currentLocation = newLocation;
     markerMap2.setLatLng([currentLocation.lat, currentLocation.lng]);
 
@@ -141,7 +165,72 @@ function resetRound(){
 
 function endGame(){
     console.log("game engeded");
+    distanceValue.forEach((distance) => {
+        if(distance == "N/A"){
+            overAllDistance = "N/A";
+        }
+    });
+    distanceValue.push(overAllDistance);
+    scoreValue.push(overAllScore);
+    for (let i = 0; i < distanceTDs.length; i++){
+        distanceTDs[i].innerText = distanceValue[i];
+    }
+    for (let i = 0; i < scoreTDs.length; i++){
+        scoreTDs[i].innerText = scoreValue[i];
+    }
+    for (let i = 0; i< actualCord.length; i++){
+        L.marker([actualCord[i].lat, actualCord[i].lng], {
+            icon: L.divIcon({ 
+                className: 'custom-icon', 
+                html: `<div style="background-color: ${colors[i]}; width: 25px; height: 25px; border-radius: 0%;"></div>`
+            })
+        }).addTo(map3);
+    }
+    for (let i = 0; i< playerGuessCord.length; i++){
+        L.marker([playerGuessCord[i].lat, playerGuessCord[i].lng], {
+            icon: L.divIcon({ 
+                className: 'custom-icon', 
+                html: `<div style="background-color: ${colors[i]}; width: 25px; height: 25px; border-radius: 50%;"></div>`
+            })
+        }).addTo(map3);
+    }
+    let legend = L.control({position: 'bottomright'});
+    legend.onAdd = function(map){
+        let div = L.DomUtil.create("div", "legend");
+        div.innerHTML += "<h4>Legend</h4>";
+        div.innerHTML += '<div style="background: red"></div><span>Actual Coordinate</span><br>';
+        div.innerHTML += '<div style="background: red; border-radius: 50%;"></div><span>Your Guess</span>';
+        return div;
+    }
+    legend.addTo(map3);
+    
 }
 NextRoundButton.addEventListener("click", resetRound);
 endGameButton.addEventListener("click", endGame);
+replayButton.addEventListener("click", function(event){
+    window.location.reload();
+});
+
+
 //startGame();
+
+/*
+overAllScore = 35;
+
+scoreValue = [25, 0, 10];
+overAllDistance = 520;
+
+distanceValue = [500, "N/A", 20];
+
+actualCord = [
+    {lat: 36.8214812, lng: -120.542477},
+    {lat: 39.734612815000446, lng: -95.024128265461},
+    {lat: 44.356075933746524, lng: 22.056555378580015}];
+
+playerGuessCord = [
+    {lat: 12.214812, lng: -51.42477},
+    {lat: 13.34612815000446, lng: -13.24128265461},
+    {lat: 11.56075933746524, lng: 51.56555378580015}];
+
+endGame();
+*/
